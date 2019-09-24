@@ -1,21 +1,40 @@
 import React from "react"
-import { Link } from "gatsby"
+import { Link, graphql } from "gatsby"
 
-import Layout from "../components/layout"
-import Image from "../components/image"
-import SEO from "../components/seo"
-
-const IndexPage = () => (
-  <Layout>
-    <SEO title="Home" />
-    <h1>Hi people</h1>
-    <p>Welcome to your new Gatsby site.</p>
-    <p>Now go build something great.</p>
-    <div style={{ maxWidth: `300px`, marginBottom: `1.45rem` }}>
-      <Image />
-    </div>
-    <Link to="/page-2/">Go to page 2</Link>
-  </Layout>
+const IndexPage = ({ data }) => (
+  <div>
+    <ul>
+      { data.allContentfulCourse.edges.map(edge => {
+        return (
+          <li key={edge.node.slug}>
+            <Link to={ edge.node.slug }><h3>{ edge.node.title }</h3></Link>
+            <div>{ edge.node.description.childMarkdownRemark.excerpt }</div>
+          </li>
+        )
+      }) }
+    </ul>
+  </div>
 )
 
 export default IndexPage
+
+export const pageQuery = graphql`
+  query HomeQuery {
+    allContentfulCourse(
+        filter: { node_locale: { eq: "en-US" } },
+        sort: { fields: [createdAt], order: DESC }
+      ) {
+      edges {
+        node {
+          title
+          slug
+          description {
+            childMarkdownRemark {
+              excerpt
+            }
+          }
+        }
+      }
+    }
+  }
+`
