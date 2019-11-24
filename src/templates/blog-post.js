@@ -1,31 +1,8 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { graphql } from 'gatsby'
 
-class BlogPostTemplate extends Component {
-  render() {
-    const {
-      title,
-      description
-    } = this.props.data.contentfulCourse
-    
-    return (
-      <div>
-        <h1>{ title }</h1>
-        <div
-          dangerouslySetInnerHTML={{
-            __html: description.childMarkdownRemark.html,
-          }}
-        >
-        </div>
-      </div>
-    )
-  }
-}
-
-export default BlogPostTemplate
-
 export const pageQuery = graphql`
-  query BlogPostBySlug($slug: String!) {
+  query ($slug: String!) {
     contentfulCourse(slug: { eq: $slug }) {
       title
       description {
@@ -36,3 +13,17 @@ export const pageQuery = graphql`
     }
   }
 `
+
+export default (props) => {
+  const {
+    title,
+    description
+  } = props.data.contentfulCourse
+
+  return (
+    <div>
+      <h1>{ title }</h1>
+      <div dangerouslySetInnerHTML={{ __html: description.childMarkdownRemark.html }} />
+    </div>
+  )
+}
